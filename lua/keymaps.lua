@@ -61,3 +61,18 @@ vim.keymap.set("x", "<leader>p", '"_dP') -- Paste without yanking replaced text 
 -- ========================================================= Terminal mode ===============================================================
 ----------------------------------------------------------------------------------------------------------------------------------------
 vim.keymap.set("t", "jj", "<C-\\><C-n>", opts)
+-- Enable system clipboard
+vim.o.clipboard = "unnamedplus"
+
+-- Key mappings for yanking text to the system clipboard
+vim.api.nvim_set_keymap('n', '<leader>y', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>y', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>Y', '"+Y', { noremap = true, silent = true })
+
+-- Autocmd to confirm yank operation
+vim.cmd([[
+  augroup YankURL
+    autocmd!
+    autocmd TextYankPost * lua print("Text yanked to system clipboard")
+  augroup END
+]])
