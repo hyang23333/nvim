@@ -12,35 +12,17 @@ return {
     { "<leader>db", ":DapToggleBreakpoint<CR>", desc = "DapToggleBreakpoint" },
   },
   config = function()
-    local dap = require("dap")
-
-    -- Use nvim-dap events to open/close dap-ui windows automatically.
-    local dapui = require("dapui")
-    dapui.setup()
-    vim.keymap.set("n", "<leader>dui", dapui.toggle)
-    dap.listeners.before.attach.dapui_config = function()
-      dapui.open()
-    end
-    dap.listeners.before.launch.dapui_config = function()
-      dapui.open()
-    end
-    dap.listeners.before.event_terminated.dapui_config = function()
-      dapui.close()
-    end
-    dap.listeners.before.event_exited.dapui_config = function()
-      dapui.close()
-    end
-
     -- Keymaps for debugger.
     vim.keymap.set("n", "<leader>dC", function()
-      dap.clear_breakpoints()
+      require("dap").clear_breakpoints()
       -- require("notify")("Breakpoints cleared", "warn")
-    end)
+    end, { desc = "Clear breakpoints." })
 
+    local dap = require("dap")
     -- C++ (begin)
     dap.adapters.lldb = {
       type = "executable",
-      command = "lldb-vscode", -- Use absolute path if necessary.
+      command = "<PATH_TO_lldb-vscode>", -- Use absolute path if necessary.
       name = "lldb",
     }
     dap.configurations.cpp = {
@@ -52,8 +34,13 @@ return {
           return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
         end,
         cwd = "${workspaceFolder}",
-        stopOnEntry = false,
-        args = {},
+        stopOnEntry = true,
+        args = function()
+          -- return vim.fn.input("Args to executable: ")
+          -- Prompt the user for arguments to pass to the program
+          local input = vim.fn.input("Program arguments: ")
+          return vim.split(input, " ") -- split the input string by spaces into a table
+        end,
 
         -- 💀
         -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:

@@ -49,6 +49,8 @@ return {
     })
     -- These have to be setup beforehand in this order.
 
+    vim.lsp.set_log_level("off") -- Disable log level to prevent generating large log files. Set to `vim.lsp.set_log_level("debug")` if debugging is needed.
+
     -- Setup language servers.
     local navic = require("nvim-navic")
     local lspconfig = require("lspconfig")
@@ -79,7 +81,7 @@ return {
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 
         opts.desc = "Go to references."
-        vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
+        vim.keymap.set("n", "gr", require("fzf-lua").lsp_references, opts)
 
         opts.desc = "Show documentation for under cursor."
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts) -- This is native with NVIM0.10+
@@ -100,7 +102,7 @@ return {
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 
         opts.desc = "See available code actions."
-        vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+        vim.keymap.set({ "n", "v" }, "<leader>ca", require("fzf-lua").lsp_code_actions, opts)
 
         opts.desc = "Formats a buffer using the attached (and optionally filtered) language server clients."
         vim.keymap.set("n", "<leader>f", function()
@@ -150,6 +152,7 @@ return {
     }) -- tsserver.setup()
 
     lspconfig.clangd.setup({
+      -- See `nvim/lua/plugins/lsp/clangd_config.yaml` for configurations.
       -- Make sure that there are no symlinks in `compile_command.json`. Otherwise GoTo Definition/Implementation wouldn't work until the file is opened once.
       capabilities = capabilities,
       on_attach = function(client, bufnr)

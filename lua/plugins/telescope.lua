@@ -12,6 +12,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.api.nvim_buf_call(ctx.buf, function()
       vim.fn.matchadd("TelescopeParent", "\t\t.*$")
       vim.api.nvim_set_hl(0, "TelescopeParent", { link = "Comment" })
+      vim.api.nvim_set_hl(0, "TelescopeSelection", { link = "CursorLine" })
     end)
   end,
 })
@@ -23,16 +24,7 @@ return {
   dependencies = { "nvim-lua/plenary.nvim" },
   keys = {
     { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", { noremap = true } }, -- Find files.
-    { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", { noremap = true } }, -- Grep amongst files.
-    { "<leader>fb", "<cmd>Telescope buffers<cr>", mode = "n", { noremap = true } }, -- Find files in buffer list.
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>", mode = "n", { noremap = true } }, -- Find help tags.
-    { "<leader>tc", "<cmd>Telescope colorscheme<cr>", mode = "n", { noremap = true } }, -- Shortcut to browsing colorschemes.
-    {
-      "<leader>ss",
-      "<cmd>:Telescope lsp_document_symbols symbols={'function','method','constructor'}<cr>",
-      mode = "n",
-      { noremap = true },
-    }, -- Search functions in current buffer.
+    { "<leader>fb", "<cmd>Telescope buffers sort_mru=true<cr>", mode = "n", { noremap = true } }, -- Find files in buffer list.
   },
   config = function()
     local telescope = require("telescope")
@@ -47,29 +39,18 @@ return {
         --     exclude = { 1, -1 }, -- Truncate to show 5 letters, except first and first to last.
         --   },
         -- },
-        path_display = filename_first,  -- This is going to be native soon in the Release, using a custom func for now to do this.
+        path_display = filename_first, -- This is going to be native soon in the Release, using a custom func for now to do this.
         wrap_results = true, -- Enable wrap around.
         mappings = {
           i = {
             ["<C-u>"] = false, -- Allow Ctrl-U to clear in insert mode.
+            ["<C-h>"] = "which_key",
           },
         },
         file_ignore_patterns = {
           "package%-lock.json",
           "package.json",
           "yarn.lock",
-        },
-      },
-      pickers = { -- Default configuration for builtin pickers.
-        colorscheme = {
-          enable_preview = true,
-        },
-        help_tags = {
-          mappings = {
-            i = {
-              ["<CR>"] = "file_vsplit", -- Do vertical split by default.
-            },
-          },
         },
       },
     })
