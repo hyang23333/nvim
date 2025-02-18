@@ -6,19 +6,25 @@ return {
   cmd = "ConformInfo",
   keys = {
     {
-      "<leader>cF",
+      "<leader>F",
       function()
-        require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
+        require("conform").format({ timeout_ms = 3000, lsp_fallback = true })
       end,
       mode = { "n", "v" },
-      desc = "Format Injected Langs",
+      desc = "Format current buffer.",
     },
   },
   config = function()
     require("conform").setup({
       formatters = {
-        clang_format = {
-          command = "clang-format",
+        -- Self-defined formatters.
+        jsonnet_indent4 = {
+          command = "jsonnetfmt",
+          args = {
+            "--indent",
+            "4",
+            "-",
+          },
         },
       },
       formatters_by_ft = {
@@ -27,8 +33,8 @@ return {
         python = { "isort", "black" },
         -- Use a sub-list to run only the first available formatter
         javascript = { "prettierd", "prettier" },
-        cpp = { "clang_format" },
-        jsonnet = { "jsonnetfmt" },
+        cpp = { "clang-format" },
+        jsonnet = { "jsonnet_indent4" },
       },
     })
     vim.api.nvim_create_autocmd("BufWritePre", {

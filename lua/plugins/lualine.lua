@@ -5,14 +5,14 @@ end
 return {
   -- Lualine
   "nvim-lualine/lualine.nvim",
-  dependencies = { { "nvim-tree/nvim-web-devicons", opt = true }},
+  dependencies = { { "nvim-tree/nvim-web-devicons", opt = true } },
   config = function()
     require("lualine").setup({
       sections = {
         lualine_a = { "mode" },
         lualine_b = {
-          "filename",
           "searchcount",
+          "filename",
           {
             "diagnosticss",
             sources = { "nvim_lsp", "nvim_diagnostic", "nvim_workspace_diagnostic" }, -- Displays diagnostics for the defined severity types
