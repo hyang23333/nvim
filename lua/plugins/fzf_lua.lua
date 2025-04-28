@@ -5,9 +5,9 @@ return {
   keys = {
     {
       "<leader>fg",
-      "<cmd> FzfLua live_grep<cr>",
+      "<cmd> FzfLua live_grep_glob<cr>",
       mode = "n",
-      { noremap = true, desc = "Live grep current project." },
+      { noremap = true, desc = "Live grep current project with glob support." },
     },
     {
       "<leader>ss",
@@ -35,6 +35,12 @@ return {
     },
     {
       "<leader>fm",
+      "<cmd> FzfLua marks<cr>",
+      mode = "n",
+      { noremap = true, desc = "Fuzzy search marks." },
+    },
+    {
+      "<leader>fn",
       "<cmd> FzfLua builtin<cr>",
       mode = "n",
       { noremap = true, desc = "Fuzzy search builtin commands." },
@@ -81,7 +87,10 @@ return {
         },
       },
       fzf_opts = { ["--cycle"] = "" },
-      files = { formatter = "path.filename_first" },
+      files = {
+        formatter = "path.filename_first",
+        fd_opts = "--hidden --type f --type l --exclude .git --exclude '*bazel-cache*'",
+      },
     })
   end,
 }
